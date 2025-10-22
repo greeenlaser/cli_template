@@ -25,10 +25,10 @@ namespace CLI
 	struct Command
 	{
 		//Variants for the primary keyword that determines the desired action,
-		//for example 'help' and 'h', you should always add atleast one
+		//for example 'help' and 'h'. You should always add atleast one
 		vector<string> primary{};
 
-		//The description of this command that is listed when the built-in 'help' command is called
+		//The description of this command that is listed when the built-in 'info' command is called
 		string description{};
 
 		//The count of how many params total this command must contain.
