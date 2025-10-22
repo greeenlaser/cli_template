@@ -224,6 +224,19 @@ void Command_Info(const vector<string>& params)
 			break;
 		}
 	}
+	
+	if (cmd.primary.empty()
+		&& cmd.paramCount == 0
+		&& !cmd.targetFunction)
+	{
+		Log::Print(
+			"Cannot print info about a command that doesn't exist!",
+			"PARSE",
+			LogType::LOG_ERROR,
+			2);
+
+		return;
+	}
 
 	result << "primary variants: ";
 	for (const auto& p : cmd.primary)
@@ -237,7 +250,7 @@ void Command_Info(const vector<string>& params)
 	}
 
 	result << "description: " << cmd.description << "\n";
-	result << "parameter count: " << to_string(cmd.paramCount) << "\n";
+	result << "parameter count: " << to_string(cmd.paramCount);
 
 	Log::Print(result.str());
 }
