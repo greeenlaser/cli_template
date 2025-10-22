@@ -25,7 +25,8 @@ namespace CLI
 			Log::Print(
 				"Target command '" + params[0] + "' is missing required prefix '" + COMMAND_PREFIX.data() + "'!",
 				"PARSE",
-				LogType::LOG_ERROR);
+				LogType::LOG_ERROR,
+				2);
 
 				return false;
 		}
@@ -54,7 +55,8 @@ namespace CLI
 			Log::Print(
 				"Inserted command '" + cleanedParams[0] + "' does not exist!",
 				"PARSE",
-				LogType::LOG_ERROR);
+				LogType::LOG_ERROR,
+				2);
 
 			return false;
 		}
@@ -64,7 +66,8 @@ namespace CLI
 			Log::Print(
 				"Target command '" + cleanedParams[0] + "' is nullptr!",
 				"PARSE",
-				LogType::LOG_ERROR);
+				LogType::LOG_ERROR,
+				2);
 
 			return false;
 		}

@@ -6,9 +6,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <filesystem>
 
 #include "KalaHeaders/log_utils.hpp"
 #include "KalaHeaders/string_utils.hpp"
+#include "KalaHeaders/file_utils.hpp"
 
 #include "core.hpp"
 #include "command.hpp"
@@ -16,6 +18,7 @@
 using KalaHeaders::Log;
 using KalaHeaders::LogType;
 using KalaHeaders::SplitString;
+using KalaHeaders::ListDirectoryContents;
 
 using CLI::Core;
 using CLI::Command;
@@ -27,20 +30,32 @@ using std::ostringstream;
 using std::string;
 using std::to_string;
 using std::vector;
+using std::filesystem::current_path;
+using std::filesystem::path;
 
 static void GetParams(int argc, char* argv[]);
 static void WaitForInput();
 
 static void AddBuiltInCommands();
 
-//Built-in commands lister
+//Built-in command for listing all commands
 static void Command_Help(const vector<string>& params);
-//Built-in command details lister
+//Built-in command for listing info about chosen command
 static void Command_Info(const vector<string>& params);
-//Built-in console messages cleaner
+
+//Built-in command for listing current path
+static void Command_Where(const vector<string>& params);
+//Built-in command for listing all files and folders in current dir
+static void Command_List(const vector<string>& params);
+//Built-in command for going to desired path
+static void Command_Go(const vector<string>& params);
+
+//Built-in command for cleaning console commands
 static void Command_Clear(const vector<string>& params);
-//Built-in cli closer
+//Built-in command for closing the cli
 static void Command_Exit(const vector<string>& params);
+
+static string currentDir{};
 
 namespace CLI
 {
@@ -81,7 +96,7 @@ void WaitForInput()
 	string line{};
 	while (true)
 	{
-		Log::Print("Enter command:");
+		Log::Print("\nEnter command:");
 
 		getline(cin, line);
 
@@ -121,6 +136,29 @@ void AddBuiltInCommands()
 		.paramCount = 1,
 		.targetFunction = Command_Clear
 	};
+
+	Command cmd_where
+	{
+		.primary = { "where" },
+		.description = "Displays current path.",
+		.paramCount = 1,
+		.targetFunction = Command_Where
+	};
+	Command cmd_list
+	{
+		.primary = { "list" },
+		.description = "Lists all files and folders in current directory.",
+		.paramCount = 1,
+		.targetFunction = Command_List
+	};
+	Command cmd_go
+	{
+		.primary = { "go" },
+		.description = "Goes to chosen directory.",
+		.paramCount = 2,
+		.targetFunction = Command_Go
+	};
+
 	Command cmd_exit
 	{
 		.primary = { "exit", "e" },
@@ -138,6 +176,11 @@ void AddBuiltInCommands()
 
 	CommandManager::AddCommand(cmd_help);
 	CommandManager::AddCommand(cmd_info);
+
+	CommandManager::AddCommand(cmd_where);
+	CommandManager::AddCommand(cmd_list);
+	CommandManager::AddCommand(cmd_go);
+
 	CommandManager::AddCommand(cmd_clear);
 	CommandManager::AddCommand(cmd_exit);
 	CommandManager::AddCommand(cmd_qe);
@@ -171,7 +214,7 @@ void Command_Info(const vector<string>& params)
 
 	ostringstream result{};
 
-	result << "\nListing info about command:\n";
+	result << "\n";
 
 	Command cmd{};
 
@@ -199,6 +242,93 @@ void Command_Info(const vector<string>& params)
 	result << "parameter count: " << to_string(cmd.paramCount) << "\n";
 
 	Log::Print(result.str());
+}
+
+void Command_Where(const vector<string>& params)
+{
+	if (currentDir.empty()) currentDir = current_path().string();
+	Log::Print("\nCurrently at: " + currentDir);
+}
+
+void Command_List(const vector<string>& params)
+{
+	if (currentDir.empty()) currentDir = current_path().string();
+
+	vector<path> content{};
+
+	string result = ListDirectoryContents(currentDir, content);
+
+	if (!result.empty())
+	{
+		Log::Print(
+			"Failed to list current directory contents! Reason: " + result,
+			"COMMAND", 
+			LogType::LOG_ERROR,
+			2);
+
+		return;
+	}
+
+	ostringstream oss{};
+
+	oss << "\nListing all paths at '" << currentDir << "':\n";
+	if (content.empty()) oss << "  - (empty)";
+	else
+	{
+		for (size_t i = 0; i < content.size(); ++i)
+		{
+			oss << "  - ";
+
+			path rel = content[i].lexically_relative(currentDir);
+			oss << rel.string();
+
+			if (is_directory(content[i])) oss << "/";
+
+			if (i + 1 < content.size()) oss << "\n";
+		}
+	}
+
+	Log::Print(oss.str());
+}
+
+void Command_Go(const vector<string>& params)
+{
+	if (currentDir.empty()) currentDir = current_path().string();
+	path correctTarget = weakly_canonical(path(currentDir) / params[1]);
+
+	if (!exists(correctTarget))
+	{
+		ostringstream oss{};
+		oss << "Cannot go to target path '" << correctTarget
+			<< "' because it does not exist!";
+
+		Log::Print(
+			oss.str(),
+			"COMMAND",
+			LogType::LOG_ERROR,
+			2);
+
+		return;
+	}
+
+	if (!is_directory(correctTarget))
+	{
+		ostringstream oss{};
+		oss << "Cannot go to target path '" << correctTarget
+			<< "' because it is not a directory!";
+
+		Log::Print(
+			oss.str(),
+			"COMMAND",
+			LogType::LOG_ERROR,
+			2);
+
+		return;
+	}
+
+	currentDir = correctTarget.string();
+
+	Log::Print("\nMoved to new path: " + currentDir);
 }
 
 void Command_Clear(const vector<string>& params) { system("cls"); }
