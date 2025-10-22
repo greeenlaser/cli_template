@@ -55,8 +55,6 @@ static void Command_Clear(const vector<string>& params);
 //Built-in command for closing the cli
 static void Command_Exit(const vector<string>& params);
 
-static string currentDir{};
-
 namespace CLI
 {
 	void Core::Run(int argc, char* argv[])
@@ -246,23 +244,23 @@ void Command_Info(const vector<string>& params)
 
 void Command_Where(const vector<string>& params)
 {
-	if (currentDir.empty()) currentDir = current_path().string();
-	Log::Print("\nCurrently at: " + currentDir);
+	if (Core::currentDir.empty()) Core::currentDir = current_path().string();
+	Log::Print("\nCurrently at: " + Core::currentDir);
 }
 
 void Command_List(const vector<string>& params)
 {
-	if (currentDir.empty()) currentDir = current_path().string();
+	if (Core::currentDir.empty()) Core::currentDir = current_path().string();
 
 	vector<path> content{};
 
-	string result = ListDirectoryContents(currentDir, content);
+	string result = ListDirectoryContents(Core::currentDir, content);
 
 	if (!result.empty())
 	{
 		Log::Print(
 			"Failed to list current directory contents! Reason: " + result,
-			"COMMAND", 
+			"COMMAND",
 			LogType::LOG_ERROR,
 			2);
 
@@ -271,7 +269,7 @@ void Command_List(const vector<string>& params)
 
 	ostringstream oss{};
 
-	oss << "\nListing all paths at '" << currentDir << "':\n";
+	oss << "\nListing all paths at '" << Core::currentDir << "':\n";
 	if (content.empty()) oss << "  - (empty)";
 	else
 	{
@@ -279,7 +277,7 @@ void Command_List(const vector<string>& params)
 		{
 			oss << "  - ";
 
-			path rel = content[i].lexically_relative(currentDir);
+			path rel = content[i].lexically_relative(Core::currentDir);
 			oss << rel.string();
 
 			if (is_directory(content[i])) oss << "/";
@@ -293,8 +291,8 @@ void Command_List(const vector<string>& params)
 
 void Command_Go(const vector<string>& params)
 {
-	if (currentDir.empty()) currentDir = current_path().string();
-	path correctTarget = weakly_canonical(path(currentDir) / params[1]);
+	if (Core::currentDir.empty()) Core::currentDir = current_path().string();
+	path correctTarget = weakly_canonical(path(Core::currentDir) / params[1]);
 
 	if (!exists(correctTarget))
 	{
@@ -326,9 +324,9 @@ void Command_Go(const vector<string>& params)
 		return;
 	}
 
-	currentDir = correctTarget.string();
+	Core::currentDir = correctTarget.string();
 
-	Log::Print("\nMoved to new path: " + currentDir);
+	Log::Print("\nMoved to new path: " + Core::currentDir);
 }
 
 void Command_Clear(const vector<string>& params) { system("cls"); }
@@ -337,7 +335,7 @@ void Command_Exit(const vector<string>& params)
 {
 	if (params.size() == 1
 		&& (params[0] == "exit"
-		|| params[0] == "e"))
+			|| params[0] == "e"))
 	{
 		ostringstream out{};
 		out << "\n==========================================================================================\n";

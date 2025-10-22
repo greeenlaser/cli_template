@@ -5,11 +5,17 @@
 
 #pragma once
 
+#include <string>
+
 namespace CLI
 {
+	using std::string;
+
 	class Core
 	{
 	public:
+		static inline string currentDir{};
+
 		static void Run(int argc, char* argv[]);
 	};
 }
