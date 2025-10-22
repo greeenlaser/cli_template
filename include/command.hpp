@@ -49,31 +49,6 @@ namespace CLI
 		static bool ParseCommand(const vector<string>& params);
 
 		//Add new command to commands list
-		static bool AddCommand(Command newValue)
-		{
-			//skip empty commands
-			if (newValue.primary.size() == 0
-				|| newValue.paramCount == 0
-				|| !newValue.targetFunction)
-			{
-				return false;
-			}
-
-			//skip existing primary variants
-			for (const auto& c : commands)
-			{
-				for (const auto& p : newValue.primary)
-				{
-					if (find(c.primary.begin(), c.primary.end(), p) != c.primary.end())
-					{
-						return false;
-					}
-				}
-			}
-
-			commands.push_back(newValue);
-
-			return true;
-		}
+		static bool AddCommand(Command newValue);
 	};
 }

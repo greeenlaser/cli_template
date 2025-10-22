@@ -76,4 +76,43 @@ namespace CLI
 
 		return true;
 	}
+
+	bool CommandManager::AddCommand(Command newValue)
+	{
+		//skip empty commands
+		if (newValue.primary.size() == 0
+			|| newValue.paramCount == 0
+			|| !newValue.targetFunction)
+		{
+			Log::Print(
+				"Failed to add a command because it has no primary parameter, parameter count or target function!",
+				"COMMAND",
+				LogType::LOG_ERROR,
+				2);
+
+			return false;
+		}
+
+		//skip existing primary variants
+		for (const auto& c : commands)
+		{
+			for (const auto& p : newValue.primary)
+			{
+				if (find(c.primary.begin(), c.primary.end(), p) != c.primary.end())
+				{
+					Log::Print(
+						"Failed to add a command because its primary parameter '" + p + "' is already in use by another command!",
+						"COMMAND",
+						LogType::LOG_ERROR,
+						2);
+
+					return false;
+				}
+			}
+		}
+
+		commands.push_back(newValue);
+
+		return true;
+	}
 }
