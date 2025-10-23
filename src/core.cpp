@@ -35,9 +35,6 @@ using std::vector;
 using std::filesystem::current_path;
 using std::filesystem::path;
 
-static void GetParams(int argc, char* argv[]);
-static void WaitForInput();
-
 static void AddBuiltInCommands();
 
 //Built-in command for listing all commands
