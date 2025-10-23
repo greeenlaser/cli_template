@@ -16,6 +16,6 @@ namespace CLI
 	public:
 		static inline string currentDir{};
 
-		static void Run(int argc, char* argv[]);
+		static void Run();
 	};
 }

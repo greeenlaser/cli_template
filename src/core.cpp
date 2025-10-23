@@ -17,7 +17,9 @@
 
 using KalaHeaders::Log;
 using KalaHeaders::LogType;
+using KalaHeaders::ContainsString;
 using KalaHeaders::SplitString;
+using KalaHeaders::TrimString;
 using KalaHeaders::ListDirectoryContents;
 
 using CLI::Core;
@@ -57,55 +59,40 @@ static void Command_Exit(const vector<string>& params);
 
 namespace CLI
 {
-	void Core::Run(int argc, char* argv[])
+	void Core::Run()
 	{
-		GetParams(argc, argv);
-		WaitForInput();
-	}
-}
+		AddBuiltInCommands();
 
-void GetParams(int argc, char* argv[])
-{
-	if (argc == 1) WaitForInput();
+		string line{};
+		while (true)
+		{
+			Log::Print("\nEnter command:");
 
-	string insertedCommand{};
+			getline(cin, line);
 
-	vector<string> params{};
-	for (int i = 1; i < argc; ++i)
-	{
-		params.emplace_back(argv[i]);
-		insertedCommand += "'" + string(argv[i]) + "' ";
-	}
+			//uncomment if you want each new command to clean the console
+			//system("cls");
 
-	if (params.empty()) WaitForInput();
+			if (line.empty()) continue;
 
-	Log::Print(
-		"Inserted command: " + insertedCommand + "\n",
-		"PARSE",
-		LogType::LOG_INFO);
+			vector<string> splitCommands{};
+			if (ContainsString(line, "&"))
+			{
+				splitCommands = SplitString(line, "&");
+			}
+			else splitCommands.push_back(line);
+			
+			for (const auto& c : splitCommands)
+			{
+				string cleanedLine = TrimString(c);
 
-	CommandManager::ParseCommand(params);
-}
+				vector<string> splitValue = SplitString(cleanedLine, " ");
 
-void WaitForInput()
-{
-	AddBuiltInCommands();
+				if (splitValue.size() == 0) continue;
 
-	string line{};
-	while (true)
-	{
-		Log::Print("\nEnter command:");
-
-		getline(cin, line);
-
-		//uncomment if you want each new command to clean the console
-		//system("cls");
-
-		vector<string> splitValue = SplitString(line, " ");
-
-		if (splitValue.size() == 0) continue;
-
-		CommandManager::ParseCommand(splitValue);
+				CommandManager::ParseCommand(splitValue);
+			}
+		}
 	}
 }
 
@@ -188,7 +175,10 @@ void Command_Help(const vector<string>& params)
 {
 	ostringstream result{};
 
-	result << "\nListing all commands. Type 'info' with a command name as the second parameter to get more info about that command\n";
+	result << "\nType 'info' with a command name as the"
+		<< " second parameter to get more info about that command.\n"
+		<< "Use the ampersand (&) symbol to stack commands, for example '--list & --qe' to list and quick exit.\n\n"
+		<< "Listing all commands:\n";
 	for (const auto& c : CommandManager::commands)
 	{
 		for (const auto& p : c.primary)
