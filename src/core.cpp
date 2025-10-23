@@ -56,9 +56,21 @@ static void Command_Exit(const vector<string>& params);
 
 namespace CLI
 {
-	void Core::Run()
+	void Core::Run(int argc, char* argv[])
 	{
 		AddBuiltInCommands();
+
+		//run the passed command if one was passed
+		if (argc > 1)
+		{
+			vector<string> params{};
+			for (int i = 1; i < argc; ++i) params.emplace_back(argv[i]);
+
+			if (!params.empty()) CommandManager::ParseCommand(params);
+
+			//always exits if a command was passed, otherwise goes into cli mode
+			Command_Exit({});
+		}
 
 		string line{};
 		while (true)
