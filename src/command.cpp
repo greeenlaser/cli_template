@@ -49,11 +49,13 @@ namespace CLI
 		}
 
 		if (foundCommand.primary.empty()
-			&& foundCommand.paramCount == 0
-			&& !foundCommand.targetFunction)
+			&& foundCommand.paramCount == 0)
 		{
 			Log::Print(
-				"Inserted command '" + cleanedParams[0] + "' does not exist!",
+				"Failed to run command '" + cleanedParams[0] + "'!\n"
+				"Possible reasons:\n"
+				"  - the command does not exist\n"
+				"  - incorrect amount of parameters were passed for the command\n",
 				"PARSE",
 				LogType::LOG_ERROR,
 				2);
@@ -64,7 +66,7 @@ namespace CLI
 		if (!foundCommand.targetFunction)
 		{
 			Log::Print(
-				"Target command '" + cleanedParams[0] + "' is nullptr!",
+				"Target command '" + cleanedParams[0] + "' has no attached function!",
 				"PARSE",
 				LogType::LOG_ERROR,
 				2);
