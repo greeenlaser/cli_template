@@ -123,13 +123,6 @@ void AddBuiltInCommands()
 		.paramCount = 2,
 		.targetFunction = Command_Info
 	};
-	Command cmd_clear
-	{
-		.primary = { "clear", "c" },
-		.description = "Clears the console from all messages.",
-		.paramCount = 1,
-		.targetFunction = Command_Clear
-	};
 
 	Command cmd_where
 	{
@@ -153,6 +146,13 @@ void AddBuiltInCommands()
 		.targetFunction = Command_Go
 	};
 
+	Command cmd_clear
+	{
+		.primary = { "clear", "c" },
+		.description = "Clears the console from all messages.",
+		.paramCount = 1,
+		.targetFunction = Command_Clear
+	};
 	Command cmd_exit
 	{
 		.primary = { "exit", "e" },
