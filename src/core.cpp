@@ -37,6 +37,8 @@ using std::filesystem::path;
 
 static void AddBuiltInCommands();
 
+//TODO: add built-in command '--run' that accepts 1 or more args and routes the given args to cmd/shell with std::system
+
 //Built-in command for listing all commands
 static void Command_Help(const vector<string>& params);
 //Built-in command for listing info about chosen command
