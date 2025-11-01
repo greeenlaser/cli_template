@@ -109,8 +109,6 @@ namespace CLI
 
 void AddBuiltInCommands()
 {
-	static vector<string> empty{};
-
 	Command cmd_help
 	{
 		.primary = { "help" },
