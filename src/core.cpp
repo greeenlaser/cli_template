@@ -21,6 +21,7 @@ using KalaHeaders::ContainsString;
 using KalaHeaders::SplitString;
 using KalaHeaders::TrimString;
 using KalaHeaders::ListDirectoryContents;
+using KalaHeaders::TokenizeString;
 
 using CLI::Core;
 using CLI::Command;
@@ -36,8 +37,6 @@ using std::filesystem::current_path;
 using std::filesystem::path;
 
 static void AddBuiltInCommands();
-
-//TODO: add built-in command '--run' that accepts 1 or more args and routes the given args to cmd/shell with std::system
 
 //Built-in command for listing all commands
 static void Command_Help(const vector<string>& params);
@@ -96,8 +95,20 @@ namespace CLI
 			for (const auto& c : splitCommands)
 			{
 				string cleanedLine = TrimString(c);
-
-				vector<string> splitValue = SplitString(cleanedLine, " ");
+				
+				vector<string> splitValue{};
+				char token{};
+				if (cleanedLine.find('"') != string::npos) token = '"';
+				if (cleanedLine.find('\'') != string::npos) token = '\'';
+				
+				if (token != 0)
+				{
+					splitValue = TokenizeString(
+						cleanedLine,
+						token,
+						" ");
+				}
+				else splitValue = SplitString(cleanedLine, " ");
 
 				if (splitValue.size() == 0) continue;
 
@@ -187,7 +198,8 @@ void Command_Help(const vector<string>& params)
 	result << "\nType 'info' with a command name as the"
 		<< " second parameter to get more info about that command.\n"
 		<< "Use the ampersand (&) symbol to stack commands, for example '--list & --qe' to list and quick exit.\n\n"
-		<< "Listing all commands:\n";
+		<< "Listing all commands:\n"
+		<< "  run, r\n";
 	for (const auto& c : CommandManager::commands)
 	{
 		for (const auto& p : c.primary)
@@ -212,6 +224,16 @@ void Command_Info(const vector<string>& params)
 	ostringstream result{};
 
 	result << "\n";
+	
+	if (command == "run"
+		|| command == "r")
+	{
+		result << "Runs selected user command with any amount of parameters.";
+		
+		Log::Print(result.str());
+		
+		return;
+	}
 
 	Command cmd{};
 

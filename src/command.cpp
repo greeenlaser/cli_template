@@ -3,6 +3,8 @@
 //This is free software, and you are welcome to redistribute it under certain conditions.
 //Read LICENSE.md for more information.
 
+#include <sstream>
+
 #include "KalaHeaders/log_utils.hpp"
 #include "KalaHeaders/string_utils.hpp"
 
@@ -12,6 +14,9 @@ using KalaHeaders::Log;
 using KalaHeaders::LogType;
 using KalaHeaders::ContainsString;
 using KalaHeaders::RemoveAllFromString;
+
+using std::system;
+using std::ostringstream;
 
 namespace CLI
 {
@@ -33,9 +38,41 @@ namespace CLI
 
 		vector<string> cleanedParams = params;
 
-		Command foundCommand{};
-
 		if (!COMMAND_PREFIX.empty()) cleanedParams[0] = RemoveAllFromString(cleanedParams[0], COMMAND_PREFIX.data());
+		
+		if (cleanedParams[0] == "run"
+			|| cleanedParams[0] == "r")
+		{
+			if (cleanedParams.size() == 1)
+			{
+				Log::Print(
+					"Failed to run command '" + cleanedParams[0] + "'! You must pass 1 or more argument after the run command.",
+					"PARSE",
+					LogType::LOG_ERROR,
+					2);
+					
+				return false;
+			}
+			
+			auto Join = [](const vector<string>& params) -> string
+				{
+					ostringstream oss{};
+					
+					for (size_t i = 1; i < params.size(); ++i)
+					{
+						oss << params[i];
+						if (i + 1 < params.size()) oss << ' ';
+					}
+					
+					return oss.str();
+				};
+			
+			system(Join(cleanedParams).c_str());
+			
+			return true;	
+		}
+		
+		Command foundCommand{};
 
 		for (const auto& c : commands)
 		{
