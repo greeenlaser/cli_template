@@ -4,7 +4,7 @@ This is a cli executable template for C++ 20 on Windows.
 
 ## Projects that use this template
 
-[KalaExtract](https://github.com/kalakit/kalaextract)
+[KalaData](https://github.com/kalakit/kaladata)
 [KalaMove](https://github.com/kalakit/kalamove)
 [KalaFont](https://github.com/kalakit/kalafont)
 
