@@ -1,12 +1,21 @@
 ﻿cmake_minimum_required(VERSION 3.29.2)
 
+set(PROGRAM_VERSION "KalaCLI 1.0.0")
 set(PROGRAM_VERSION_NUMBER 1.0.0.0)
 
-project("Program" VERSION ${PROGRAM_VERSION_NUMBER} LANGUAGES C CXX)
+project("KalaCLI" VERSION ${PROGRAM_VERSION_NUMBER} LANGUAGES C CXX)
+
+# Adds a '_' prefix in front of the created binary files if set to TRUE
+set(KALA_PRERELEASE TRUE)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+# Runtime lib handling for MSVC
+if (MSVC)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
+endif()
 
 # Platform Detection
 if (WIN32)
@@ -24,11 +33,6 @@ else()
     message(FATAL_ERROR "Unknown CMAKE_BUILD_TYPE: '${CMAKE_BUILD_TYPE}'! Must be Debug, Release, or RelWithDebInfo.")
 endif()
 
-# Runtime lib handling for MSVC
-if (MSVC)
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL")
-endif()
-
 # Directory Setup
 set(INCLUDE_DIR "${CMAKE_SOURCE_DIR}/include")
 set(EXT_SHARED_DIR "${CMAKE_SOURCE_DIR}/_external_shared")
@@ -39,65 +43,79 @@ file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
     "${CMAKE_SOURCE_DIR}/src/*/*.cpp"
 )
 
-# Executable
-add_executable(CLI ${SOURCE_FILES})
+# SHARED LIBRARY (.dll)
+add_library(KalaCLI SHARED ${SOURCE_FILES})
 
 # Enable exception handling for MSVC
 if (MSVC)
-    target_compile_options(CLI PRIVATE /EHsc)
+    target_compile_options(KalaCLI PRIVATE /EHsc)
 endif()
 
-set_target_properties(CLI PROPERTIES OUTPUT_NAME "CLI")
-target_compile_features(CLI PRIVATE cxx_std_20)
+# Get prefix
+set(KALA_PREFIX "")
+if (KALA_PRERELEASE)
+	set(KALA_PREFIX "_")
+endif()
+	
+# Get suffix
+if (IS_RELEASE)
+	set(KALA_SUFFIX "")
+else()
+	set(KALA_SUFFIX "d")
+endif()
+
+# Set output name with renderer suffix and debug postfix
+set_target_properties(KalaCLI PROPERTIES
+	OUTPUT_NAME "${KALA_PREFIX}KalaCLI${PROJECT_VERSION_MAJOR}${KALA_SUFFIX}"
+)
 
 # Includes
 file(GLOB_RECURSE HEADERS
 	configure_depends
 	"${CMAKE_SOURCE_DIR}/include/*.hpp"
 )
-target_sources(CLI PRIVATE ${HEADERS})
-target_include_directories(CLI PRIVATE
+target_sources(KalaCLI PRIVATE ${HEADERS})
+target_include_directories(KalaCLI PRIVATE
 	"${INCLUDE_DIR}"
 	"${EXT_SHARED_DIR}"
 )
 
 # Preprocessor Defines
-target_compile_definitions(CLI PRIVATE 
+target_compile_definitions(KalaCLI PRIVATE 
+	LIB_EXPORT
 	WIN32_LEAN_AND_MEAN
 	NOMINMAX)
+	
+# Expose version string
+add_compile_definitions(
+	PROGRAM_VERSION="${PROGRAM_VERSION}"
+)
 
 # Hide console in release mode
 #if(IS_RELEASE)
-#    set_target_properties(CLI PROPERTIES WIN32_EXECUTABLE TRUE)
+#    set_target_properties(KalaCLI PROPERTIES WIN32_EXECUTABLE TRUE)
 #    if (MSVC)
-#        set_target_properties(CLI PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
+#        set_target_properties(KalaCLI PROPERTIES LINK_FLAGS "/ENTRY:mainCRTStartup")
 #    endif()
 #endif()
-
-# Installation
-set(CMAKE_INSTALL_BINDIR bin)
-install(TARGETS CLI DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 # Copy important files
 set(COPY_TARGETS README.md LICENSE.md)
 foreach(FILE ${COPY_TARGETS})
-add_custom_command(TARGET CLI POST_BUILD
+add_custom_command(TARGET KalaCLI POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -f 
-        "$<TARGET_FILE_DIR:CLI>/${FILE}"
+        "$<TARGET_FILE_DIR:KalaCLI>/${FILE}"
     COMMAND ${CMAKE_COMMAND} -E copy
 		"${CMAKE_SOURCE_DIR}/${FILE}"
-		"$<TARGET_FILE_DIR:CLI>/${FILE}"
+		"$<TARGET_FILE_DIR:KalaCLI>/${FILE}"
 )
 endforeach()
 
 # Copy entire docs folder
-add_custom_command(TARGET CLI POST_BUILD
+add_custom_command(TARGET KalaCLI POST_BUILD
     COMMAND ${CMAKE_COMMAND} -E rm -rf
-        "$<TARGET_FILE_DIR:CLI>/docs"
+        "$<TARGET_FILE_DIR:KalaCLI>/docs"
     COMMAND ${CMAKE_COMMAND} -E copy_directory
         "${CMAKE_SOURCE_DIR}/docs"
-        "$<TARGET_FILE_DIR:CLI>/docs"
+        "$<TARGET_FILE_DIR:KalaCLI>/docs"
 )
-
-# Package
-include(CPack)

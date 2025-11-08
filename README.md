@@ -1,4 +1,4 @@
-# cli template
+# KalaCLI
 
 This is a cli executable template for C++ 20 on Windows. 
 

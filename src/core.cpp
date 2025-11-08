@@ -23,9 +23,9 @@ using KalaHeaders::TrimString;
 using KalaHeaders::ListDirectoryContents;
 using KalaHeaders::TokenizeString;
 
-using CLI::Core;
-using CLI::Command;
-using CLI::CommandManager;
+using KalaCLI::Core;
+using KalaCLI::Command;
+using KalaCLI::CommandManager;
 
 using std::cin;
 using std::getline;
@@ -55,11 +55,15 @@ static void Command_Clear(const vector<string>& params);
 //Built-in command for closing the cli
 static void Command_Exit(const vector<string>& params);
 
-namespace CLI
+namespace KalaCLI
 {
-	void Core::Run(int argc, char* argv[])
+	void Core::Run(
+		int argc,
+		char* argv[],
+		function<void()> AddExternalCommands)
 	{
 		AddBuiltInCommands();
+		if (AddExternalCommands) AddExternalCommands();
 
 		//run the passed command if one was passed
 		if (argc > 1)

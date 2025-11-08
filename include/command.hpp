@@ -9,9 +9,10 @@
 #include <vector>
 #include <functional>
 
+#include "KalaHeaders/core_utils.hpp"
 #include "KalaHeaders/math_utils.hpp"
 
-namespace CLI
+namespace KalaCLI
 {
 	using std::string;
 	using std::string_view;
@@ -22,7 +23,7 @@ namespace CLI
 	//for example '--help', leave empty if you dont want a required prefix
 	constexpr string_view COMMAND_PREFIX = "--";
 
-	struct Command
+	struct LIB_API Command
 	{
 		//Variants for the primary keyword that determines the desired action,
 		//for example 'help' and 'h'. You should always add atleast one
@@ -40,7 +41,7 @@ namespace CLI
 		function<void(const vector<string>&)> targetFunction{};
 	};
 
-	class CommandManager
+	class LIB_API CommandManager
 	{
 	public:
 		static inline vector<Command> commands{};

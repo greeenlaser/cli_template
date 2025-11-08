@@ -6,16 +6,23 @@
 #pragma once
 
 #include <string>
+#include <functional>
 
-namespace CLI
+#include "KalaHeaders/core_utils.hpp"
+
+namespace KalaCLI
 {
 	using std::string;
+	using std::function;
 
-	class Core
+	class LIB_API Core
 	{
 	public:
 		static inline string currentDir{};
 
-		static void Run(int argc, char* argv[]);
+		static void Run(
+			int argc,
+			char* argv[],
+			function<void()> AddExternalCommands);
 	};
 }

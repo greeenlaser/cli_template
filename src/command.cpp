@@ -18,7 +18,7 @@ using KalaHeaders::RemoveAllFromString;
 using std::system;
 using std::ostringstream;
 
-namespace CLI
+namespace KalaCLI
 {
 	bool CommandManager::ParseCommand(const vector<string>& params)
 	{
