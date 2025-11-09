@@ -34,7 +34,7 @@ action: forcecopy
 
 //copy debug dll
 origin: debug@_KalaCLI1d.dll
-target: ..@KalaData@_external_shared@KalaCLI@debug@_KalaCLI03d.dll, ..@KalaFont@_external_shared@KalaCLI@debug@_KalaCLI03d.dll, ..@KalaMove@_external_shared@KalaCLI@debug@_KalaCLI1d.dll
+target: ..@KalaData@_external_shared@KalaCLI@debug@_KalaAudio1d.dll, ..@KalaFont@_external_shared@KalaCLI@debug@_KalaAudio1d.dll, ..@KalaMove@_external_shared@KalaCLI@debug@_KalaCLI1d.dll
 action: forcecopy
 
 //copy debug lib
