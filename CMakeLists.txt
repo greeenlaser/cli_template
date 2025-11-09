@@ -19,9 +19,9 @@ endif()
 
 # Platform Detection
 if (WIN32)
-    message(STATUS "[Program] Platform = Windows")
+    message(STATUS "[KALACLI] Platform = Windows")
 else()
-    message(FATAL_ERROR "[Program] Unsupported platform. Only Windows is supported.")
+    message(FATAL_ERROR "[KALACLI] Unsupported platform. Only Windows is supported.")
 endif()
 
 # Build Type Detection
