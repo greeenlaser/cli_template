@@ -33,26 +33,26 @@ action: forcecopy
 //
 
 //copy debug dll
-origin: debug@_KalaCLI1d.dll
-target: ..@KalaData@_external_shared@KalaCLI@debug@_KalaAudio1d.dll, ..@KalaFont@_external_shared@KalaCLI@debug@_KalaAudio1d.dll, ..@KalaMove@_external_shared@KalaCLI@debug@_KalaCLI1d.dll
+origin: debug@KalaCLI1d.dll
+target: ..@KalaData@_external_shared@KalaCLI@debug@KalaCLI1d.dll, ..@KalaFont@_external_shared@KalaCLI@debug@KalaCLI1d.dll, ..@KalaMove@_external_shared@KalaCLI@debug@KalaCLI1d.dll
 action: forcecopy
 
 //copy debug lib
-origin: debug@_KalaCLI1d.lib
-target: ..@KalaData@_external_shared@KalaCLI@debug@_KalaCLI1d.lib, ..@KalaFont@_external_shared@KalaCLI@debug@_KalaCLI1d.lib, ..@KalaMove@_external_shared@KalaCLI@debug@_KalaCLI1d.lib
+origin: debug@KalaCLI1d.lib
+target: ..@KalaData@_external_shared@KalaCLI@debug@KalaCLI1d.lib, ..@KalaFont@_external_shared@KalaCLI@debug@KalaCLI1d.lib, ..@KalaMove@_external_shared@KalaCLI@debug@KalaCLI1d.lib
 action: forcecopy
 
 //copy debug pdb
-origin: debug@_KalaCLI1d.pdb
-target: ..@KalaData@_external_shared@KalaCLI@debug@_KalaCLI1d.pdb, ..@KalaFont@_external_shared@KalaCLI@debug@_KalaCLI1d.pdb, ..@KalaMove@_external_shared@KalaCLI@debug@_KalaCLI1d.pdb
+origin: debug@KalaCLI1d.pdb
+target: ..@KalaData@_external_shared@KalaCLI@debug@KalaCLI1d.pdb, ..@KalaFont@_external_shared@KalaCLI@debug@KalaCLI1d.pdb, ..@KalaMove@_external_shared@KalaCLI@debug@KalaCLI1d.pdb
 action: forcecopy
 
 //copy release dll
-origin: release@_KalaCLI1.dll
-target: ..@KalaData@_external_shared@KalaCLI@release@_KalaCLI1.dll, ..@KalaFont@_external_shared@KalaCLI@release@_KalaCLI1.dll, ..@KalaMove@_external_shared@KalaCLI@release@_KalaCLI1.dll
+origin: release@KalaCLI1.dll
+target: ..@KalaData@_external_shared@KalaCLI@release@KalaCLI1.dll, ..@KalaFont@_external_shared@KalaCLI@release@KalaCLI1.dll, ..@KalaMove@_external_shared@KalaCLI@release@KalaCLI1.dll
 action: forcecopy
 
 //copy release lib
-origin: release@_KalaCLI1.lib
-target: ..@KalaData@_external_shared@KalaCLI@release@_KalaCLI1.lib, ..@KalaFont@_external_shared@KalaCLI@release@_KalaCLI1.lib, ..@KalaMove@_external_shared@KalaCLI@release@_KalaCLI1.lib
+origin: release@KalaCLI1.lib
+target: ..@KalaData@_external_shared@KalaCLI@release@KalaCLI1.lib, ..@KalaFont@_external_shared@KalaCLI@release@KalaCLI1.lib, ..@KalaMove@_external_shared@KalaCLI@release@KalaCLI1.lib
 action: forcecopy

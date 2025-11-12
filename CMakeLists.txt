@@ -50,12 +50,6 @@ add_library(KalaCLI SHARED ${SOURCE_FILES})
 if (MSVC)
     target_compile_options(KalaCLI PRIVATE /EHsc)
 endif()
-
-# Get prefix
-set(KALA_PREFIX "")
-if (KALA_PRERELEASE)
-	set(KALA_PREFIX "_")
-endif()
 	
 # Get suffix
 if (IS_RELEASE)
@@ -66,7 +60,7 @@ endif()
 
 # Set output name with renderer suffix and debug postfix
 set_target_properties(KalaCLI PROPERTIES
-	OUTPUT_NAME "${KALA_PREFIX}KalaCLI${PROJECT_VERSION_MAJOR}${KALA_SUFFIX}"
+	OUTPUT_NAME "KalaCLI${PROJECT_VERSION_MAJOR}${KALA_SUFFIX}"
 )
 
 # Includes
