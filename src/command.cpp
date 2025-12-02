@@ -10,10 +10,10 @@
 
 #include "command.hpp"
 
-using KalaHeaders::Log;
-using KalaHeaders::LogType;
-using KalaHeaders::ContainsString;
-using KalaHeaders::RemoveAllFromString;
+using KalaHeaders::KalaLog::Log;
+using KalaHeaders::KalaLog::LogType;
+using KalaHeaders::KalaString::ContainsString;
+using KalaHeaders::KalaString::RemoveAllFromString;
 
 using std::system;
 using std::ostringstream;

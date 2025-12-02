@@ -15,13 +15,13 @@
 #include "core.hpp"
 #include "command.hpp"
 
-using KalaHeaders::Log;
-using KalaHeaders::LogType;
-using KalaHeaders::ContainsString;
-using KalaHeaders::SplitString;
-using KalaHeaders::TrimString;
-using KalaHeaders::ListDirectoryContents;
-using KalaHeaders::TokenizeString;
+using KalaHeaders::KalaLog::Log;
+using KalaHeaders::KalaLog::LogType;
+using KalaHeaders::KalaString::ContainsString;
+using KalaHeaders::KalaString::SplitString;
+using KalaHeaders::KalaString::TrimString;
+using KalaHeaders::KalaString::TokenizeString;
+using KalaHeaders::KalaFile::ListDirectoryContents;
 
 using KalaCLI::Core;
 using KalaCLI::Command;
